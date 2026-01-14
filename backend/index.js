@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
+import schoolRoutes from './routes/schoolRoutes.js';
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ app.use(express.json());
 
 // Gunakan routes
 app.use('/api/auth', authRoutes);
+app.use('/api/school', schoolRoutes);
 
 app.get('/', (req, res) => {
     res.send('API Simas is Running...');

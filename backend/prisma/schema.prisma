@@ -18,3 +18,27 @@ model users {
   created_at      DateTime? @default(now()) @db.Timestamp(6)
   updated_at      DateTime? @default(now()) @db.Timestamp(6)
 }
+
+model SchoolProfile {
+  id              Int      @id @default(1)
+  schoolName      String   @map("school_name")
+  npsn            String
+  schoolStatus    String   @map("school_status")
+  level           String
+  principalName   String   @map("principal_name")
+  principalNip    String   @map("principal_nip")
+  accreditation   String
+  curriculum      String
+  establishedYear Int      @map("established_year")
+  licenseNumber   String   @map("license_number")
+  email           String
+  phone           String
+  address         String   @db.Text
+  schoolLogo      String?  @map("school_logo")
+  foundationLogo  String?  @map("foundation_logo")
+  buildingPhoto   String?  @map("building_photo")
+  socialLinks     String[] @map("social_links")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("school_profiles")
+}

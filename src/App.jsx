@@ -1,15 +1,22 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/Login';
-import Dashboard from './pages/Dashboard'; // Asumsi Anda buat file ini
+import Dashboard from './pages/Dashboard';
+import Settings from './pages/Settings';
 import ProtectedRoute from './components/ProtectedRoute';
+
+// Jika Anda nanti membuat halaman Siswa, import di sini
+// import SiswaPage from './pages/Siswa'; 
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* 1. Rute Publik: Login */}
         <Route path="/" element={<LoginPage />} />
+
+        {/* 2. Kelompok Rute Admin (Diproteksi) */}
+        {/* Setiap halaman harus memiliki Route-nya sendiri-sendiri */}
         
-        {/* Halaman ini diproteksi */}
         <Route 
           path="/dashboard" 
           element={
@@ -18,6 +25,29 @@ function App() {
             </ProtectedRoute>
           } 
         />
+
+        <Route 
+          path="/settings" 
+          element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          } 
+        />
+
+        {/* Contoh Rute Siswa (Jika sudah ada filenya nanti) */}
+        {/* <Route 
+          path="/siswa" 
+          element={
+            <ProtectedRoute>
+              <SiswaPage />
+            </ProtectedRoute>
+          } 
+        /> 
+        */}
+
+        {/* 3. Rute 404: Jika halaman tidak ditemukan, arahkan ke dashboard atau login */}
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
   );
