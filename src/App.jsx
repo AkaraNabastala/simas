@@ -1,7 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/Login';
 import Dashboard from './pages/Dashboard';
-import Settings from './pages/Settings';
+import Settings from './pages/admin/Settings';
+import Profile from './pages/admin/Profile';
+import AccountSettings from './pages/admin/AccountSettings';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Jika Anda nanti membuat halaman Siswa, import di sini
@@ -22,6 +24,22 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/profile" 
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/account-settings" 
+          element={
+            <ProtectedRoute>
+              <AccountSettings />
             </ProtectedRoute>
           } 
         />

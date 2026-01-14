@@ -7,18 +7,18 @@ import {
   Facebook, Youtube, Music2, Link as LinkIcon, Fingerprint, 
   Calendar, ShieldCheck, Camera
 } from 'lucide-react';
-import Sidebar from '../components/Sidebar';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import Sidebar from '../../components/Sidebar';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 
 const Settings = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // State Form Lengkap - Variabel Tetap Sesuai Keinginan Anda
   const [formData, setFormData] = useState({
     namaSekolah: '',
     npsn: '',
+    kategori: 'Sekolah', 
     statusSekolah: 'Negeri',
     jenjang: 'SMA',
     kepalaSekolah: '',
@@ -30,23 +30,28 @@ const Settings = () => {
     email: '',
     telepon: '',
     alamat: '',
-    socialLinks: [] // Inisialisasi array kosong agar tidak eror .map()
+    socialLinks: []
   });
 
   const [previews, setPreviews] = useState({ sekolah: null, yayasan: null, gedung: null });
   const [currentLink, setCurrentLink] = useState('');
 
-  // 1. Fetch Data dari Database (Dengan Mapping ke variabel lokal)
+  // Konfigurasi Jenjang Berdasarkan Kategori
+  const listJenjang = {
+    'Sekolah': ['SD', 'SMP', 'SMA', 'SMK'],
+    'Madrasah': ['MI', 'MTs', 'MA', 'MAK']
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await axios.get('http://localhost:5000/api/school/profile');
         if (res.data) {
           const db = res.data;
-          // Memasukkan data DB ke variabel asli Anda
           setFormData({
             namaSekolah: db.schoolName || '',
             npsn: db.npsn || '',
+            kategori: db.category || 'Sekolah',
             statusSekolah: db.schoolStatus || 'Negeri',
             jenjang: db.level || 'SMA',
             kepalaSekolah: db.principalName || '',
@@ -68,15 +73,14 @@ const Settings = () => {
     fetchData();
   }, []);
 
-  // 2. Fungsi Simpan ke Database (Mapping variabel lokal ke field DB)
-    const handleSave = async () => {
+  const handleSave = async () => {
     setLoading(true);
-    const loadId = toast.loading('Menyimpan data ke PostgreSQL...');
+    const loadId = toast.loading('Menyimpan data...');
     
-    // Mapping data agar sesuai dengan model SchoolProfile di Prisma
     const dataToSave = {
       schoolName: formData.namaSekolah,
       npsn: formData.npsn,
+      category: formData.kategori,
       schoolStatus: formData.statusSekolah,
       level: formData.jenjang,
       principalName: formData.kepalaSekolah,
@@ -92,18 +96,14 @@ const Settings = () => {
     };
 
     try {
-        const response = await axios.put('http://localhost:5000/api/school/update', dataToSave);
-        
-        if (response.status === 200) {
-        toast.success('Data berhasil disimpan ke database!', { id: loadId });
-        }
+        await axios.put('http://localhost:5000/api/school/update', dataToSave);
+        toast.success('Data Berhasil Diperbarui!', { id: loadId });
     } catch (err) {
-        console.error(err);
-        toast.error('Gagal terhubung ke server database', { id: loadId });
+        toast.error('Gagal Simpan Database', { id: loadId });
     } finally {
         setLoading(false);
     }
-    };
+  };
 
   const getIcon = (url) => {
     const link = url.toLowerCase();
@@ -123,7 +123,7 @@ const Settings = () => {
 
   return (
     <div className="min-h-screen bg-[#F4F7FE] flex overflow-hidden font-['Poppins'] text-[12px] text-slate-700">
-      <Toaster position="top-right" reverseOrder={false} />
+      <Toaster position="top-right" />
       <Sidebar isOpen={isSidebarOpen} setOpen={setSidebarOpen} />
       
       <div className="flex-1 flex flex-col min-w-0 h-screen">
@@ -132,30 +132,28 @@ const Settings = () => {
         <main className="flex-1 overflow-y-auto p-4 lg:p-10">
           <div className="max-w-6xl mx-auto space-y-6 pb-10">
             
+            {/* Action Header */}
             <div className="flex flex-col sm:flex-row items-center justify-between bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm gap-4">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-100 shrink-0">
+                <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shrink-0">
                   <School size={24} />
                 </div>
                 <div>
                   <h1 className="text-xl font-black text-slate-800 tracking-tight">Profil Satuan Pendidikan</h1>
-                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Sistem Management Sekolah</p>
+                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest italic">Pengaturan Profil & Database</p>
                 </div>
               </div>
-              <button 
-                onClick={handleSave}
-                disabled={loading}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white px-8 py-3.5 rounded-2xl font-bold transition-all shadow-xl shadow-blue-100 active:scale-95"
-              >
-                <Save size={18} /> {loading ? 'Memproses...' : 'Simpan Perubahan'}
+              <button onClick={handleSave} disabled={loading} className="w-full sm:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white px-8 py-3.5 rounded-2xl font-bold transition-all active:scale-95 shadow-xl shadow-blue-100">
+                <Save size={18} /> {loading ? 'Menyimpan...' : 'Simpan Perubahan'}
               </button>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               
+              {/* Kolom Kiri: Visual & Sosmed */}
               <div className="lg:col-span-4 space-y-8">
                 <section className="bg-white p-7 rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden">
-                  <h3 className="font-black text-slate-800 uppercase tracking-widest text-[10px] mb-8 flex items-center gap-2">
+                  <h3 className="font-black text-slate-800 uppercase tracking-widest text-[10px] mb-8 flex items-center gap-2 italic">
                     <ImageIcon size={16} className="text-blue-600" /> Identitas Visual
                   </h3>
                   <div className="grid grid-cols-2 gap-6">
@@ -164,14 +162,14 @@ const Settings = () => {
                         {previews.sekolah ? <img src={previews.sekolah} className="w-full h-full object-contain p-3" /> : <Building2 size={30} className="text-slate-300" />}
                         <label className="absolute inset-0 bg-blue-600/20 opacity-0 group-hover:opacity-100 cursor-pointer flex items-center justify-center transition-all"><Upload className="text-blue-700" /><input type="file" className="hidden" onChange={(e) => handleImage(e, 'sekolah')} /></label>
                       </div>
-                      <span className="text-[9px] font-black text-slate-800 uppercase">Logo Sekolah</span>
+                      <span className="text-[9px] font-black text-slate-800 uppercase tracking-tighter">Logo Instansi</span>
                     </div>
                     <div className="space-y-3 text-center">
                       <div className="relative aspect-square bg-slate-50 border-2 border-dashed border-slate-300 rounded-[2rem] flex items-center justify-center overflow-hidden group">
                         {previews.yayasan ? <img src={previews.yayasan} className="w-full h-full object-contain p-3" /> : <Landmark size={30} className="text-slate-300" />}
                         <label className="absolute inset-0 bg-slate-800/20 opacity-0 group-hover:opacity-100 cursor-pointer flex items-center justify-center transition-all"><Upload className="text-slate-800" /><input type="file" className="hidden" onChange={(e) => handleImage(e, 'yayasan')} /></label>
                       </div>
-                      <span className="text-[9px] font-black text-slate-800 uppercase">Logo Yayasan</span>
+                      <span className="text-[9px] font-black text-slate-800 uppercase tracking-tighter">Logo Yayasan</span>
                     </div>
                   </div>
                 </section>
@@ -212,28 +210,57 @@ const Settings = () => {
                 </section>
               </div>
 
+              {/* Kolom Kanan: Data Form Utama */}
               <div className="lg:col-span-8">
                 <div className="bg-white p-8 lg:p-12 rounded-[3rem] border border-slate-200 shadow-sm space-y-12">
+                  
+                  {/* Bagian 1: Identitas & Jenjang */}
                   <div className="space-y-8">
-                    <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div className="border-b border-slate-100 pb-4">
                       <h3 className="text-[13px] font-black text-slate-800 uppercase tracking-tight flex items-center gap-3 italic">
                         <span className="w-2 h-6 bg-blue-600 rounded-full"></span> Data Utama Sekolah
                       </h3>
-                      <div className="flex bg-slate-100 p-1 rounded-xl gap-1">
-                        {['SD', 'SMP', 'SMA', 'SMK'].map((j) => (
-                          <button key={j} onClick={() => setFormData({...formData, jenjang: j})} className={`px-4 py-1.5 rounded-lg font-black text-[9px] transition-all ${formData.jenjang === j ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}>{j}</button>
-                        ))}
-                      </div>
                     </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                       <div className="md:col-span-2 space-y-2">
                         <label className="font-black text-slate-800 uppercase tracking-widest text-[9px]">Nama Satuan Pendidikan</label>
-                        <input type="text" value={formData.namaSekolah} onChange={(e) => setFormData({...formData, namaSekolah: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 font-bold text-slate-800 outline-none focus:ring-4 focus:ring-blue-50 transition-all shadow-sm" />
+                        <input type="text" value={formData.namaSekolah} onChange={(e) => setFormData({...formData, namaSekolah: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 font-bold text-slate-800 outline-none" />
                       </div>
+
+                      {/* Baris Baru: Kategori & Jenjang Semuanya di Grid */}
                       <div className="space-y-2">
-                        <label className="font-black text-slate-800 uppercase tracking-widest text-[9px]">NPSN</label>
+                        <label className="font-black text-slate-800 uppercase tracking-widest text-[9px]">Kategori Instansi</label>
+                        <select 
+                          value={formData.kategori} 
+                          onChange={(e) => setFormData({...formData, kategori: e.target.value, jenjang: listJenjang[e.target.value][0]})}
+                          className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-bold text-slate-800 outline-none appearance-none cursor-pointer"
+                        >
+                          <option value="Sekolah">Sekolah Umum (Kemendikbud)</option>
+                          <option value="Madrasah">Madrasah (Kemenag)</option>
+                        </select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="font-black text-slate-800 uppercase tracking-widest text-[9px]">Jenjang Pendidikan</label>
+                        <div className="flex bg-slate-100 p-1.5 rounded-2xl gap-1 border border-slate-200">
+                          {listJenjang[formData.kategori].map((j) => (
+                            <button 
+                              key={j} 
+                              onClick={() => setFormData({...formData, jenjang: j})} 
+                              className={`flex-1 py-3 rounded-xl font-black text-[10px] transition-all ${formData.jenjang === j ? 'bg-white text-blue-600 shadow-md' : 'text-slate-500 hover:text-slate-800'}`}
+                            >
+                              {j}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="font-black text-slate-800 uppercase tracking-widest text-[9px]">NPSN Sekolah</label>
                         <input type="text" value={formData.npsn} onChange={(e) => setFormData({...formData, npsn: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 font-bold text-slate-800 outline-none" />
                       </div>
+
                       <div className="space-y-2">
                         <label className="font-black text-slate-800 uppercase tracking-widest text-[9px]">Status</label>
                         <div className="flex p-1.5 bg-slate-100 rounded-2xl gap-2 border border-slate-200">
@@ -242,53 +269,40 @@ const Settings = () => {
                           ))}
                         </div>
                       </div>
-                      <div className="space-y-2"><label className="font-black text-slate-800 uppercase tracking-widest text-[9px]">Kepala Sekolah</label><input type="text" value={formData.kepalaSekolah} onChange={(e) => setFormData({...formData, kepalaSekolah: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 font-bold text-slate-800 outline-none" /></div>
-                      <div className="space-y-2"><label className="font-black text-slate-800 uppercase tracking-widest text-[9px]">NIP/NIPY</label><input type="text" value={formData.nipKepala} onChange={(e) => setFormData({...formData, nipKepala: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 font-bold text-slate-800 outline-none" /></div>
+
+                      <div className="md:col-span-2 space-y-2">
+                         <label className="font-black text-slate-800 uppercase tracking-widest text-[9px]">Kepala Sekolah</label>
+                         <input type="text" value={formData.kepalaSekolah} onChange={(e) => setFormData({...formData, kepalaSekolah: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 font-bold text-slate-800 outline-none" />
+                      </div>
                     </div>
                   </div>
 
+                  {/* ADMINISTRASI */}
                   <div className="space-y-8 pt-4 border-t border-slate-50">
                     <h3 className="text-[13px] font-black text-slate-800 uppercase tracking-tight flex items-center gap-3 italic">
                         <span className="w-2 h-6 bg-emerald-500 rounded-full"></span> Administrasi
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {/* Baris 1: 3 Kolom */}
                         <div className="space-y-2">
                         <label className="font-black text-slate-800 uppercase tracking-widest text-[9px]">Akreditasi</label>
                         <select value={formData.akreditasi} onChange={(e) => setFormData({...formData, akreditasi: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-bold text-slate-800 appearance-none outline-none">
-                            <option>Terakreditasi A</option>
-                            <option>Terakreditasi B</option>
-                            <option>Terakreditasi C</option>
-                            <option>Terakreditasi D</option>
-                            <option>Belum Akreditasi</option>
+                            <option>Terakreditasi A</option><option>Terakreditasi B</option><option>Terakreditasi C</option><option>Belum Akreditasi</option>
                         </select>
                         </div>
-                        
-                        <div className="space-y-2">
-                        <label className="font-black text-slate-800 uppercase tracking-widest text-[9px]">Kurikulum</label>
-                        <input type="text" value={formData.kurikulum} onChange={(e) => setFormData({...formData, kurikulum: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-bold text-slate-800 outline-none" />
-                        </div>
-                        
-                        <div className="space-y-2">
-                        <label className="font-black text-slate-800 uppercase tracking-widest text-[9px]">Tahun</label>
-                        <input type="number" value={formData.tahunBerdiri} onChange={(e) => setFormData({...formData, tahunBerdiri: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-bold text-slate-800 outline-none" />
-                        </div>
-
-                        {/* Baris 2: Full Width (Membentang 3 kolom) */}
-                        <div className="md:col-span-3 space-y-2">
-                        <label className="font-black text-slate-800 uppercase tracking-widest text-[9px]">SK Operasional</label>
-                        <input type="text" value={formData.skIzin} onChange={(e) => setFormData({...formData, skIzin: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 font-bold text-slate-800 outline-none focus:border-emerald-500 transition-all shadow-sm" />
-                        </div>
+                        <div className="space-y-2"><label className="font-black text-slate-800 uppercase tracking-widest text-[9px]">Kurikulum</label><input type="text" value={formData.kurikulum} onChange={(e) => setFormData({...formData, kurikulum: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-bold text-slate-800 outline-none" /></div>
+                        <div className="space-y-2"><label className="font-black text-slate-800 uppercase tracking-widest text-[9px]">Tahun Berdiri</label><input type="number" value={formData.tahunBerdiri} onChange={(e) => setFormData({...formData, tahunBerdiri: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-bold text-slate-800 outline-none" /></div>
+                        <div className="md:col-span-3 space-y-2"><label className="font-black text-slate-800 uppercase tracking-widest text-[9px]">SK Operasional</label><input type="text" value={formData.skIzin} onChange={(e) => setFormData({...formData, skIzin: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 font-bold text-slate-800 outline-none shadow-sm focus:border-emerald-500 transition-all" /></div>
                     </div>
-                    </div>
+                  </div>
 
+                  {/* KONTAK */}
                   <div className="space-y-8 pt-4 border-t border-slate-50">
                     <h3 className="text-[13px] font-black text-slate-800 uppercase tracking-tight flex items-center gap-3 italic">
                        <span className="w-2 h-6 bg-orange-500 rounded-full"></span> Kontak & Alamat
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <div className="space-y-2"><label className="font-black text-slate-800 uppercase tracking-widest text-[9px]">Email</label><input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 font-bold text-slate-800 outline-none" /></div>
-                      <div className="space-y-2"><label className="font-black text-slate-800 uppercase tracking-widest text-[9px]">Telepon</label><input type="text" value={formData.telepon} onChange={(e) => setFormData({...formData, telepon: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 font-bold text-slate-800 outline-none" /></div>
+                      <div className="space-y-2"><label className="font-black text-slate-800 uppercase tracking-widest text-[9px]">Email Official</label><input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 font-bold text-slate-800 outline-none" /></div>
+                      <div className="space-y-2"><label className="font-black text-slate-800 uppercase tracking-widest text-[9px]">No. Telepon</label><input type="text" value={formData.telepon} onChange={(e) => setFormData({...formData, telepon: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 font-bold text-slate-800 outline-none" /></div>
                       <div className="md:col-span-2 space-y-2"><label className="font-black text-slate-800 uppercase tracking-widest text-[9px]">Alamat Lengkap</label><textarea rows="3" value={formData.alamat} onChange={(e) => setFormData({...formData, alamat: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-[2rem] px-8 py-6 font-bold text-slate-800 outline-none resize-none shadow-sm focus:border-orange-500 transition-all"></textarea></div>
                     </div>
                   </div>

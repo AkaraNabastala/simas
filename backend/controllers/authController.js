@@ -4,26 +4,29 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import pg from 'pg';
 import { PrismaClient } from '../generated/prisma/client.ts'; 
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt'; // Tambahkan import bcrypt
 
-// 1. Setup koneksi PostgreSQL menggunakan Driver 'pg'
+// Setup Prisma (Tetap sama seperti milik Anda)
 const connectionString = `${process.env.DATABASE_URL}`;
 const pool = new pg.Pool({ connectionString });
 const adapter = new PrismaPg(pool);
-
-// 2. Masukkan adapter ke dalam constructor PrismaClient (Sesuai error tadi)
 const prisma = new PrismaClient({ adapter });
 
 export const login = async (req, res) => {
     const { username, password } = req.body;
+    console.log("Mencoba login dengan:", username); // DEBUG 1
     try {
-        const user = await prisma.users.findUnique({
-            where: { username }
-        });
-
-        if (!user) return res.status(404).json({ success: false, message: "User tidak ditemukan" });
-        
-        if (user.password !== password) {
-            return res.status(401).json({ success: false, message: "Password salah" });
+        const user = await prisma.users.findUnique({ where: { username } });
+        if (!user) {
+            console.log("User TIDAK ditemukan di DB"); // DEBUG 2
+            return res.status(404).json({ success: false, message: "Pengguna tidak terdaftar!" });
+        }
+        console.log("User ditemukan. Membandingkan password..."); // DEBUG 3
+        // Memastikan password yang diketik vs hash di DB
+        const isPasswordMatch = await bcrypt.compare(password, user.password);
+        console.log("Hasil perbandingan:", isPasswordMatch); // DEBUG 4
+        if (!isPasswordMatch) {
+            return res.status(401).json({ success: false, message: "Kata sandi salah." });
         }
 
         const token = jwt.sign(
@@ -35,10 +38,14 @@ export const login = async (req, res) => {
         res.json({
             success: true,
             token,
-            user: { username: user.username, role: user.role }
+            user: { 
+                username: user.username, 
+                role: user.role,
+                full_name: user.full_name
+            }
         });
     } catch (error) {
-        console.error(error);
+        console.error("ERROR LOGIN:", error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
