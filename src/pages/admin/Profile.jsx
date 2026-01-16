@@ -22,15 +22,32 @@ const Profile = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const loadId = toast.loading('Memperbarui Profil...');
+    const loadId = toast.loading('Sinkronisasi data aman...');
     
     try {
-      await axios.put('http://localhost:5000/api/users/profile/update', profileData);
-      localStorage.setItem('user', JSON.stringify({ ...storedUser, ...profileData }));
-      toast.success('Profil berhasil diperbarui!', { id: loadId });
-    } catch (error) { // 'err' diganti 'error' dan digunakan (ESLint fix)
-      console.error(error);
-      toast.error('Gagal memperbarui profil.', { id: loadId });
+      const token = localStorage.getItem('token');
+      
+      const payload = {
+        full_name: profileData.full_name,
+        identity_number: profileData.identity_number || null,
+      };
+
+      const response = await axios.put(
+        'http://localhost:5000/api/users/profile/update', 
+        payload,
+        { headers: { Authorization: `Bearer ${token}` } } // Kirim Token ke Backend
+      );
+      
+      if (response.data.success) {
+        // Perbarui LocalStorage agar UI (Header/Sidebar) berubah otomatis
+        const updatedUser = { ...storedUser, ...response.data.user };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        setProfileData(prev => ({ ...prev, ...response.data.user }));
+        toast.success('Profil berhasil diamankan di database!', { id: loadId });
+      }
+    } catch (error) {
+      const msg = error.response?.data?.message || 'Server sedang sibuk atau mati';
+      toast.error(msg, { id: loadId });
     } finally {
       setLoading(false);
     }

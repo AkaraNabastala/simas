@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
 
@@ -34,6 +34,10 @@ model SchoolProfile {
   email           String
   phone           String
   address         String   @db.Text
+  province        String?  // Tambahan
+  city            String?  // Tambahan
+  district        String?  // Tambahan
+  postalCode      String?  @map("postal_code")
   schoolLogo      String?  @map("school_logo")
   foundationLogo  String?  @map("foundation_logo")
   buildingPhoto   String?  @map("building_photo")
@@ -41,4 +45,18 @@ model SchoolProfile {
   updatedAt       DateTime @updatedAt @map("updated_at")
 
   @@map("school_profiles")
+}
+
+model AuditLog {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @map("user_id")
+  username    String   @db.VarChar(100)
+  role        String   @db.VarChar(20)
+  action      String   @db.VarChar(255)
+  oldData     Json?    @map("old_data")
+  newData     Json?    @map("new_data")
+  ipAddress   String?  @map("ip_address") @db.VarChar(45)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("audit_logs")
 }

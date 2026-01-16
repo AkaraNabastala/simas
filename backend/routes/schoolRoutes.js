@@ -1,38 +1,27 @@
 import express from 'express';
-import { prisma } from '../lib/prisma.js';
+import { updateSchoolProfile, getSchoolProfile } from '../controllers/schoolController.js';
+import prisma from '../lib/prisma.js';
+
+// TAMBAHKAN BARIS INI (Sesuaikan path folder middleware Anda)
+import { authenticateToken } from '../middleware/auth.js'; 
 
 const router = express.Router();
 
-// Ambil Data
-router.get('/profile', async (req, res) => {
-    try {
-        const profile = await prisma.schoolProfile.findUnique({
-            where: { id: 1 }
-        });
-        res.json(profile || {});
-    } catch (error) {
-        res.status(500).json({ message: "Database Error", error: error.message });
-    }
+// Route untuk mengambil logs
+router.get('/logs', authenticateToken, async (req, res) => {
+  try {
+    const logs = await prisma.auditLog.findMany({
+      take: 10,
+      orderBy: { createdAt: 'desc' }
+    });
+    res.json(logs);
+  } catch (error) {
+    console.error("Error Fetch Logs:", error);
+    res.status(500).json({ error: "Gagal mengambil log dari database" });
+  }
 });
 
-// Update Data
-router.put('/update', async (req, res) => {
-    try {
-        const { id, ...updateData } = req.body;
-        // Pastikan establishedYear adalah Integer
-        if (updateData.establishedYear) {
-            updateData.establishedYear = parseInt(updateData.establishedYear);
-        }
-
-        const profile = await prisma.schoolProfile.upsert({
-            where: { id: 1 },
-            update: updateData,
-            create: { id: 1, ...updateData },
-        });
-        res.json(profile);
-    } catch (error) {
-        res.status(500).json({ message: "Gagal menyimpan data", error: error.message });
-    }
-});
+router.get('/profile', getSchoolProfile);
+router.put('/update', authenticateToken, updateSchoolProfile);
 
 export default router;

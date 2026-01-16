@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, GraduationCap, BookOpen, Settings, X, ChevronRight, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, UserCog ,GraduationCap, BookOpen, Settings, X, ChevronRight, LogOut, School } from 'lucide-react';
 import axios from 'axios';
 import logoDefault from '../assets/logo_smk.png';
 
@@ -23,10 +23,9 @@ const Sidebar = ({ isOpen, setOpen }) => {
 
   const menuItems = [
     { name: 'Dashboard', icon: <LayoutDashboard size={18} />, path: '/dashboard' },
-    { name: 'Siswa', icon: <Users size={18} />, path: '/siswa' },
-    { name: 'Guru', icon: <GraduationCap size={18} />, path: '/guru' },
+    { name: 'Profil Sekolah', icon: <School size={18} />, path: '/profil-sekolah' },
+    { name: 'Management User', icon: <UserCog size={18} />, path: '/management-user' },
     { name: 'Pelajaran', icon: <BookOpen size={18} />, path: '/pelajaran' },
-    { name: 'Pengaturan', icon: <Settings size={18} />, path: '/settings' },
   ];
 
   return (

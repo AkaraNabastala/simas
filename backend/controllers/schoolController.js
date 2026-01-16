@@ -1,6 +1,5 @@
 import prisma from '../lib/prisma.js';
 
-// Pastikan ada kata 'export' di depan const
 export const getSchoolProfile = async (req, res) => {
   try {
     let profile = await prisma.schoolProfile.findUnique({
@@ -8,7 +7,6 @@ export const getSchoolProfile = async (req, res) => {
     });
 
     if (!profile) {
-      // Jika data tidak ada, buatkan data default agar aplikasi tidak crash
       profile = await prisma.schoolProfile.create({
         data: {
           id: 1,
@@ -36,19 +34,24 @@ export const getSchoolProfile = async (req, res) => {
   }
 };
 
-// Pastikan ada kata 'export' di depan const
 export const updateSchoolProfile = async (req, res) => {
   try {
     const data = req.body;
 
-    // Proteksi Keamanan: Validasi input dasar
+    // 1. Validasi input dasar
     if (!data.schoolName || !data.email) {
       return res.status(400).json({ error: "Nama Sekolah dan Email wajib diisi" });
     }
 
-    const updated = await prisma.schoolProfile.upsert({
+    // 2. Ambil data LAMA untuk dibandingkan (Audit)
+    const oldProfile = await prisma.schoolProfile.findUnique({
+      where: { id: 1 }
+    });
+
+    // 3. Proses Update
+    const updated = await prisma.schoolProfile.update({
       where: { id: 1 },
-      update: {
+      data: {
         schoolName: data.schoolName,
         npsn: data.npsn,
         schoolStatus: data.schoolStatus,
@@ -62,30 +65,44 @@ export const updateSchoolProfile = async (req, res) => {
         email: data.email,
         phone: data.phone,
         address: data.address,
+        province: data.province,
+        city: data.city,
+        district: data.district,
+        postalCode: data.postalCode,
         socialLinks: data.socialLinks || [],
-      },
-      create: {
-        id: 1,
-        schoolName: data.schoolName,
-        npsn: data.npsn,
-        schoolStatus: data.schoolStatus,
-        level: data.level,
-        principalName: data.principalName,
-        principalNip: data.principalNip,
-        accreditation: data.accreditation,
-        curriculum: data.curriculum,
-        establishedYear: parseInt(data.establishedYear) || 2000,
-        licenseNumber: data.licenseNumber,
-        email: data.email,
-        phone: data.phone,
-        address: data.address,
-        socialLinks: data.socialLinks || [],
+        buildingPhoto: data.buildingPhoto, // Menambahkan kolom foto gedung
       }
     });
 
-    res.json(updated);
+    // 4. CATAT KE TABEL AUDIT LOG
+    // req.user didapat dari authenticateToken middleware
+    await prisma.auditLog.create({
+      data: {
+        userId: req.user.id,
+        username: req.user.username || req.user.full_name || "Admin",
+        role: req.user.role || "UNKNOWN",
+        action: "UPDATE_SCHOOL_PROFILE",
+        oldData: oldProfile, // Simpan objek data lama
+        newData: updated,    // Simpan objek data baru
+        ipAddress: req.ip || req.headers['x-forwarded-for'] || "0.0.0.0"
+      }
+    });
+
+    res.json({ success: true, message: "Profil diperbarui dan riwayat perubahan dicatat", data: updated });
   } catch (error) {
-    console.error("Error Update Profile:", error);
+    console.error("Error Update Profile & Audit:", error);
+    res.status(500).json({ error: "Gagal menyimpan perubahan ke database" });
+  }
+  
+};
+export const getLatestLogs = async (req, res) => {
+  try {
+    const logs = await prisma.auditLog.findMany({
+      take: 3,
+      orderBy: { createdAt: 'desc' }
+    });
+    res.json(logs);
+  } catch {
     res.status(500).json({ error: "Gagal menyimpan perubahan ke database" });
   }
 };

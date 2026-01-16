@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  User, Lock, School, Loader2, Eye, EyeOff, MapPin, 
+  User, Lock, School, Loader2, Eye, EyeOff, 
   Globe, Instagram, Facebook, Youtube, Music2, CheckCircle2, 
   Hash, BookOpen
 } from 'lucide-react'; 
@@ -69,11 +69,18 @@ const Login = () => {
         {/* SISI KIRI: Form Login */}
         <div className="w-full lg:w-[38%] flex flex-col justify-between px-10 md:px-16 lg:px-12 xl:px-20 py-10 bg-white z-10 border-r border-slate-100">
           
-          {/* Logo Section */}
-          <div className="flex items-center justify-center lg:justify-start gap-4">
+          {/* Header Mobile: SI-MAS di pojok kiri atas */}
+          <div className="lg:hidden absolute top-8 left-10">
+            <div className="flex flex-col">
+              <span className="font-black text-lg tracking-tighter text-blue-600 leading-none uppercase">SI-MAS</span>
+            </div>
+          </div>
+
+          {/* Logo Section Desktop (Tetap seperti sebelumnya) */}
+          <div className="hidden lg:flex items-center justify-start gap-2">
             <img src={school?.schoolLogo || logoDefault} alt="Logo" className="h-14 w-auto object-contain" />
-            <div className="hidden lg:block h-10 w-[1px] bg-slate-200" />
-            <div className="hidden lg:flex flex-col">
+            <div className="h-10 w-[1px] bg-slate-200 mx-1" />
+            <div className="flex flex-col">
               <span className="font-black text-lg tracking-tighter text-blue-600 leading-none uppercase">SI-MAS</span>
               <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Sistem Management Akademik</span>
             </div>
@@ -81,14 +88,20 @@ const Login = () => {
 
           {/* Form Section */}
           <div className="max-w-sm w-full mx-auto lg:mx-0 py-8 lg:py-0">
-            <div className="mb-10 text-center lg:text-left">
-              {/* MOBILE: Tampilkan Nama Sekolah & Alamat */}
-              <div className="lg:hidden mb-10">
+            <div className="mb-10 text-center lg:text-left flex flex-col items-center lg:items-start">
+              
+              {/* Logo & Nama Sekolah - Khusus Mobile (Center Stacked) */}
+              <div className="lg:hidden mb-8 flex flex-col items-center">
+                <img 
+                  src={school?.schoolLogo || logoDefault} 
+                  alt="Logo Sekolah" 
+                  className="h-20 w-auto object-contain mb-4" 
+                />
                 <h2 className="text-2xl font-black text-slate-900 mb-2 tracking-tighter uppercase leading-none">
                   {school?.schoolName || 'NAMA SEKOLAH'}
                 </h2>
                 <p className="text-[10px] text-slate-500 font-medium italic uppercase tracking-tight">
-                  <MapPin size={10} className="inline mr-1" /> {school?.address}
+                  {school?.address}
                 </p>
               </div>
               
@@ -119,7 +132,6 @@ const Login = () => {
               </button>
             </form>
 
-            {/* SOSIAL MEDIA: Jarak diperjauh untuk mobile dengan mt-16 */}
             {school?.socialLinks?.length > 0 && (
               <div className="mt-16 lg:mt-8 flex flex-col items-center lg:items-start gap-3">
                 <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em]">Ikuti Kami</span>
@@ -134,18 +146,15 @@ const Login = () => {
             )}
           </div>
 
-          {/* FOOTER: Alamat Paling Bawah dengan Jarak pt-12 untuk mobile */}
-          <div className="pt-12 lg:pt-8 border-t border-slate-100">
-            <div className="flex items-start gap-4">
-              <div className="p-3 bg-blue-50 rounded-2xl"><MapPin size={22} className="text-blue-600" /></div>
-              <div className="flex flex-col">
-                <p className="font-black text-slate-900 uppercase tracking-tight text-[12px] leading-tight">
-                  {school?.schoolName || 'NAMA INSTITUSI'}
-                </p>
-                <p className="font-medium text-slate-400 leading-tight max-w-[280px] mt-1 italic uppercase text-[10px]">
-                  {school?.address}
-                </p>
-              </div>
+          {/* FOOTER: Alamat (Hanya Desktop) */}
+          <div className="hidden lg:block pt-8 border-t border-slate-100">
+            <div className="flex flex-col">
+              <p className="font-black text-slate-900 uppercase tracking-tight text-[12px] leading-tight">
+                {school?.schoolName || 'NAMA INSTITUSI'}
+              </p>
+              <p className="font-medium text-slate-400 leading-tight max-w-[350px] mt-1 italic uppercase text-[10px]">
+                {school?.address}
+              </p>
             </div>
           </div>
         </div>
@@ -161,7 +170,7 @@ const Login = () => {
             <div className="flex flex-col gap-8 max-w-3xl">
               <div className="flex items-center gap-3">
                 <div className="px-5 py-2 bg-blue-600 text-white rounded-full font-black text-[9px] uppercase tracking-[0.2em]">
-                   Sistem Terintegrasi
+                   Sistem Management Akademik
                 </div>
                 <div className="px-5 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full font-black text-[9px] uppercase tracking-[0.2em]">
                    {school?.schoolStatus || 'NEGERI'} • {school?.level || 'SMA/SMK'}

@@ -1,8 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/Login';
 import Dashboard from './pages/Dashboard';
-import Settings from './pages/admin/Settings';
+import SchoolProfile from './pages/admin/SchoolProfile';
 import Profile from './pages/admin/Profile';
+import UserManagement from './pages/admin/UserManagement';
 import AccountSettings from './pages/admin/AccountSettings';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -45,10 +46,18 @@ function App() {
         />
 
         <Route 
-          path="/settings" 
+          path="/management-user" 
           element={
             <ProtectedRoute>
-              <Settings />
+              <UserManagement />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/profil-sekolah" 
+          element={
+            <ProtectedRoute>
+              <SchoolProfile />
             </ProtectedRoute>
           } 
         />
