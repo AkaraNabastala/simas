@@ -21,7 +21,7 @@ const ImportModal = ({ isOpen, onClose, onConfirm, fileName, dataCount }) => {
           <h3 className="text-sm font-black text-slate-900 uppercase italic mb-2 tracking-tight">
             Konfirmasi Import CSV
           </h3>
-          
+
           {/* Ukuran Deskripsi: 12px */}
           <p className="text-xs text-slate-500 font-bold leading-relaxed mb-6">
             File: <span className="text-blue-600 font-black">"{fileName}"</span><br/>
@@ -37,14 +37,14 @@ const ImportModal = ({ isOpen, onClose, onConfirm, fileName, dataCount }) => {
           </div>
 
           <div className="flex gap-3">
-            <button 
-              onClick={onClose} 
+            <button
+              onClick={onClose}
               className="flex-1 py-3.5 rounded-2xl font-black uppercase text-[11px] text-slate-500 bg-slate-100 hover:bg-slate-200 transition-all active:scale-95"
             >
               Batal
             </button>
-            <button 
-              onClick={onConfirm} 
+            <button
+              onClick={onConfirm}
               className="flex-1 py-3.5 rounded-2xl font-black uppercase text-[11px] text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-100 transition-all flex items-center justify-center gap-2 active:scale-95"
             >
               <CheckCircle2 size={14} /> Proses

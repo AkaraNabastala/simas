@@ -9,7 +9,7 @@ import axios from 'axios';
 const Profile = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  
+
   const storedUser = JSON.parse(localStorage.getItem('user')) || {};
   const [profileData, setProfileData] = useState({
     full_name: storedUser.full_name || '',
@@ -23,21 +23,21 @@ const Profile = () => {
     e.preventDefault();
     setLoading(true);
     const loadId = toast.loading('Sinkronisasi data aman...');
-    
+
     try {
       const token = localStorage.getItem('token');
-      
+
       const payload = {
         full_name: profileData.full_name,
         identity_number: profileData.identity_number || null,
       };
 
       const response = await axios.put(
-        'http://localhost:5000/api/users/profile/update', 
+        'http://localhost:5000/api/users/profile/update',
         payload,
         { headers: { Authorization: `Bearer ${token}` } } // Kirim Token ke Backend
       );
-      
+
       if (response.data.success) {
         // Perbarui LocalStorage agar UI (Header/Sidebar) berubah otomatis
         const updatedUser = { ...storedUser, ...response.data.user };
@@ -57,17 +57,17 @@ const Profile = () => {
     <div className="min-h-screen bg-[#F4F7FE] flex overflow-hidden font-['Poppins'] text-[12px] text-slate-700">
       <Toaster position="top-right" />
       <Sidebar isOpen={isSidebarOpen} setOpen={setSidebarOpen} />
-      
+
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         <Header setOpen={setSidebarOpen} user={profileData} />
-        
+
         <main className="flex-1 overflow-y-auto p-4 lg:p-10 bg-[radial-gradient(circle_at_top_right,_#e2e8f0,_transparent_40%)]">
           <div className="max-w-5xl mx-auto space-y-8 pb-10">
-            
+
             {/* Hero Card - Desain Login Style */}
             <div className="bg-slate-900 rounded-[3rem] p-10 shadow-2xl shadow-blue-900/20 relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/20 rounded-full blur-[100px] -mr-32 -mt-32 transition-transform group-hover:scale-110 duration-700"></div>
-              
+
               <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
                 <div className="relative">
                   <div className="w-36 h-36 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[2.5rem] flex items-center justify-center text-white text-5xl font-black shadow-2xl border-4 border-white/10">
@@ -77,7 +77,7 @@ const Profile = () => {
                     <Camera size={20} />
                   </button>
                 </div>
-                
+
                 <div className="text-center md:text-left">
                   <div className="inline-block px-4 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-full mb-4">
                     <span className="text-blue-400 font-black uppercase tracking-[0.3em] text-[9px]">Personal Identity</span>
@@ -107,7 +107,7 @@ const Profile = () => {
                       <input type="text" value={profileData.full_name} onChange={(e) => setProfileData({...profileData, full_name: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-14 pr-6 py-4.5 font-bold text-slate-900 outline-none focus:border-blue-600 focus:bg-white transition-all shadow-sm" />
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <label className="font-black text-slate-800 uppercase tracking-widest text-[10px] ml-1">Email Official</label>
                     <div className="relative">

@@ -8,7 +8,7 @@ const EditUserModal = ({ isOpen, onClose, onSave, userData }) => {
     username: userData?.username || '',
     identity_number: userData?.identity_number || '',
     role: userData?.role || '',
-    password: '' 
+    password: ''
   });
 
   if (!isOpen) return null;
@@ -29,7 +29,7 @@ const EditUserModal = ({ isOpen, onClose, onSave, userData }) => {
         <form className="p-5 space-y-4" onSubmit={(e) => { e.preventDefault(); onSave(editData); }}>
           <div className="space-y-1.5">
             <label htmlFor="edit-full-name" className="text-[9px] font-black text-slate-400 uppercase ml-1">Nama Lengkap</label>
-            <input 
+            <input
               id="edit-full-name"
               name="full_name"
               autoComplete="name"
@@ -42,7 +42,7 @@ const EditUserModal = ({ isOpen, onClose, onSave, userData }) => {
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <label htmlFor="edit-username" className="text-[9px] font-black text-slate-400 uppercase ml-1">Username</label>
-              <input 
+              <input
                 id="edit-username"
                 name="username"
                 autoComplete="username"
@@ -53,7 +53,7 @@ const EditUserModal = ({ isOpen, onClose, onSave, userData }) => {
             </div>
             <div className="space-y-1.5">
               <label htmlFor="edit-role" className="text-[9px] font-black text-slate-400 uppercase ml-1">Role</label>
-              <select 
+              <select
                 id="edit-role"
                 name="role"
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-[11px] font-bold text-slate-900 outline-none focus:border-blue-600 appearance-none transition-all"
@@ -69,7 +69,7 @@ const EditUserModal = ({ isOpen, onClose, onSave, userData }) => {
 
           <div className="space-y-1.5">
             <label htmlFor="edit-identity" className="text-[9px] font-black text-slate-400 uppercase ml-1">NIP / NISN</label>
-            <input 
+            <input
               id="edit-identity"
               name="identity_number"
               autoComplete="off"
@@ -83,7 +83,7 @@ const EditUserModal = ({ isOpen, onClose, onSave, userData }) => {
             <label htmlFor="edit-password" className="text-[9px] font-black text-slate-400 uppercase ml-1">Password Baru (Opsional)</label>
             <div className="relative">
               <Key size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input 
+              <input
                 id="edit-password"
                 name="password"
                 type="password"

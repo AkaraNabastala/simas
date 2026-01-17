@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  User, Lock, School, Loader2, Eye, EyeOff, 
-  Globe, Instagram, Facebook, Youtube, Music2, CheckCircle2, 
+import {
+  User, Lock, School, Loader2, Eye, EyeOff,
+  Globe, Instagram, Facebook, Youtube, Music2, CheckCircle2,
   Hash, BookOpen
-} from 'lucide-react'; 
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
@@ -63,12 +63,12 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-white flex items-center justify-center antialiased font-['Poppins'] text-[10px]">
       <Toaster position="top-center" />
-      
+
       <div className="flex w-full min-h-screen overflow-hidden">
-        
+
         {/* SISI KIRI: Form Login */}
         <div className="w-full lg:w-[38%] flex flex-col justify-between px-10 md:px-16 lg:px-12 xl:px-20 py-10 bg-white z-10 border-r border-slate-100">
-          
+
           <div className="lg:hidden absolute top-8 left-10">
             <div className="flex flex-col">
               <span className="font-black text-lg tracking-tighter text-blue-600 leading-none uppercase">SI-MAS</span>
@@ -76,10 +76,10 @@ const Login = () => {
           </div>
 
           <div className="hidden lg:flex items-center justify-start gap-2">
-            <img 
-              src={school?.schoolLogo ? `http://localhost:5000/uploads/${school.schoolLogo}` : logoDefault} 
-              alt="Logo" 
-              className="h-14 w-auto object-contain" 
+            <img
+              src={school?.schoolLogo ? `http://localhost:5000/uploads/${school.schoolLogo}` : logoDefault}
+              alt="Logo"
+              className="h-14 w-auto object-contain"
             />
             <div className="h-10 w-[1px] bg-slate-200 mx-1" />
             <div className="flex flex-col">
@@ -90,12 +90,12 @@ const Login = () => {
 
           <div className="max-w-sm w-full mx-auto lg:mx-0 py-8 lg:py-0">
             <div className="mb-10 text-center lg:text-left flex flex-col items-center lg:items-start">
-              
+
               <div className="lg:hidden mb-8 flex flex-col items-center">
-                <img 
-                  src={school?.schoolLogo ? `http://localhost:5000/uploads/${school.schoolLogo}` : logoDefault} 
-                  alt="Logo Sekolah" 
-                  className="h-20 w-auto object-contain mb-4" 
+                <img
+                  src={school?.schoolLogo ? `http://localhost:5000/uploads/${school.schoolLogo}` : logoDefault}
+                  alt="Logo Sekolah"
+                  className="h-20 w-auto object-contain mb-4"
                 />
                 <h2 className="text-2xl font-black text-slate-900 mb-2 tracking-tighter uppercase leading-none">
                   {school?.schoolName || 'NAMA SEKOLAH'}
@@ -104,7 +104,7 @@ const Login = () => {
                   {school?.address}
                 </p>
               </div>
-              
+
               <h2 className="hidden lg:block text-3xl font-black text-slate-900 mb-2 tracking-tight uppercase italic">Portal Masuk</h2>
               <p className="text-slate-500 font-medium italic text-[11px]">Silakan autentikasi identitas Anda.</p>
             </div>
@@ -114,15 +114,15 @@ const Login = () => {
                 <label htmlFor="username" className="font-black text-slate-700 uppercase tracking-[0.15em] text-[9px] ml-1">Username / NISN</label>
                 <div className="relative group">
                   <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 group-focus-within:text-blue-600 transition-colors"><User size={20}/></span>
-                  <input 
-                    required 
+                  <input
+                    required
                     id="username"
                     name="username"
                     autoComplete="username"
-                    type="text" 
-                    className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-slate-800 text-[11px]" 
-                    placeholder="Masukkan ID" 
-                    onChange={(e) => setForm({...form, username: e.target.value})} 
+                    type="text"
+                    className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-slate-800 text-[11px]"
+                    placeholder="Masukkan ID"
+                    onChange={(e) => setForm({...form, username: e.target.value})}
                   />
                 </div>
               </div>
@@ -131,15 +131,15 @@ const Login = () => {
                 <label htmlFor="password" className="font-black text-slate-700 uppercase tracking-[0.15em] text-[9px] ml-1">Kata Sandi</label>
                 <div className="relative group">
                   <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 group-focus-within:text-blue-600 transition-colors"><Lock size={20}/></span>
-                  <input 
-                    required 
+                  <input
+                    required
                     id="password"
                     name="password"
                     autoComplete="current-password"
-                    type={showPassword ? "text" : "password"} 
-                    className="w-full pl-12 pr-12 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-slate-800 text-[11px]" 
-                    placeholder="••••••••" 
-                    onChange={(e) => setForm({...form, password: e.target.value})} 
+                    type={showPassword ? "text" : "password"}
+                    className="w-full pl-12 pr-12 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-slate-800 text-[11px]"
+                    placeholder="••••••••"
+                    onChange={(e) => setForm({...form, password: e.target.value})}
                   />
                   <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600">{showPassword ? <EyeOff size={20}/> : <Eye size={20}/>}</button>
                 </div>
@@ -179,10 +179,10 @@ const Login = () => {
         {/* SISI KANAN: Visual Experience */}
         <div className="hidden lg:flex w-[62%] relative items-end justify-start bg-slate-900 p-20 overflow-hidden">
           <div className="absolute inset-0">
-            <img 
-              src={school?.buildingPhoto ? `http://localhost:5000/uploads/${school.buildingPhoto}` : gedungDefault} 
-              alt="Gedung Sekolah" 
-              className="w-full h-full object-cover opacity-60" 
+            <img
+              src={school?.buildingPhoto ? `http://localhost:5000/uploads/${school.buildingPhoto}` : gedungDefault}
+              alt="Gedung Sekolah"
+              className="w-full h-full object-cover opacity-60"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/20 to-transparent" />
           </div>

@@ -9,7 +9,7 @@ import toast, { Toaster } from 'react-hot-toast';
 const AccountSettings = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  
+
   const storedUser = JSON.parse(localStorage.getItem('user')) || { full_name: 'User', username: 'admin', role: 'Admin' };
   const [accountData, setAccountData] = useState({
     username: storedUser.username || '',
@@ -29,7 +29,7 @@ const AccountSettings = () => {
 
     setLoading(true);
     const loadId = toast.loading('Mengamankan kredensial...');
-    
+
     try {
       const token = localStorage.getItem('token');
       const response = await axios.put(
@@ -46,7 +46,7 @@ const AccountSettings = () => {
         toast.success('Akun berhasil diamankan!', { id: loadId });
         // Reset field password setelah sukses
         setAccountData(prev => ({ ...prev, currentPassword: '', newPassword: '', confirmPassword: '' }));
-        
+
         // Update username di localStorage jika berubah
         const updatedUser = { ...storedUser, username: accountData.username };
         localStorage.setItem('user', JSON.stringify(updatedUser));
@@ -63,13 +63,13 @@ const AccountSettings = () => {
     <div className="min-h-screen bg-[#F4F7FE] flex overflow-hidden font-['Poppins'] text-[11px] text-slate-700">
       <Toaster position="top-right" />
       <Sidebar isOpen={isSidebarOpen} setOpen={setSidebarOpen} />
-      
+
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         <Header setOpen={setSidebarOpen} user={storedUser} />
-        
+
         <main className="flex-1 overflow-y-auto p-4 lg:p-6">
           <div className="max-w-4xl mx-auto space-y-4 pb-6">
-            
+
             {/* Header Section - Lebih Ringkas */}
             <div className="flex flex-col border-l-4 border-blue-600 pl-4 py-1">
               <h1 className="text-xl font-black text-slate-900 tracking-tight uppercase italic">Account Settings</h1>
@@ -77,7 +77,7 @@ const AccountSettings = () => {
             </div>
 
             <form onSubmit={handleSaveAccount} className="space-y-4">
-              
+
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Identitas Login */}
                 <section className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
@@ -96,11 +96,11 @@ const AccountSettings = () => {
                       <label className="font-black text-slate-800 uppercase tracking-widest text-[9px] ml-1">Username / ID Unik</label>
                       <div className="relative">
                         <UserCircle className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-600" size={16} />
-                        <input 
-                          type="text" 
-                          value={accountData.username} 
+                        <input
+                          type="text"
+                          value={accountData.username}
                           onChange={(e) => setAccountData({...accountData, username: e.target.value})}
-                          className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3 font-bold text-slate-900 outline-none focus:border-blue-600 focus:bg-white transition-all" 
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3 font-bold text-slate-900 outline-none focus:border-blue-600 focus:bg-white transition-all"
                         />
                       </div>
                     </div>
@@ -124,26 +124,26 @@ const AccountSettings = () => {
                   </div>
 
                   <div className="space-y-3">
-                    <input 
-                      type="password" 
-                      placeholder="Sandi Saat Ini" 
+                    <input
+                      type="password"
+                      placeholder="Sandi Saat Ini"
                       value={accountData.currentPassword}
                       onChange={(e) => setAccountData({...accountData, currentPassword: e.target.value})}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-900 outline-none focus:border-red-500 transition-all text-[10px]" 
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-900 outline-none focus:border-red-500 transition-all text-[10px]"
                     />
-                    <input 
-                      type="password" 
-                      placeholder="Sandi Baru" 
+                    <input
+                      type="password"
+                      placeholder="Sandi Baru"
                       value={accountData.newPassword}
                       onChange={(e) => setAccountData({...accountData, newPassword: e.target.value})}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-900 outline-none focus:border-red-500 transition-all text-[10px]" 
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-900 outline-none focus:border-red-500 transition-all text-[10px]"
                     />
-                    <input 
-                      type="password" 
-                      placeholder="Konfirmasi Sandi Baru" 
+                    <input
+                      type="password"
+                      placeholder="Konfirmasi Sandi Baru"
                       value={accountData.confirmPassword}
                       onChange={(e) => setAccountData({...accountData, confirmPassword: e.target.value})}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-900 outline-none focus:border-red-500 transition-all text-[10px]" 
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-900 outline-none focus:border-red-500 transition-all text-[10px]"
                     />
                   </div>
                 </section>

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
-import { 
-  Save, Building2, Image as ImageIcon, Mail, Phone, Upload, 
-  Globe, Landmark, School, Trash2, Plus, Instagram, 
+import {
+  Save, Building2, Image as ImageIcon, Mail, Phone, Upload,
+  Globe, Landmark, School, Trash2, Plus, Instagram,
   Facebook, Youtube, Link as LinkIcon, Hash
 } from 'lucide-react';
 import Sidebar from '../../components/Sidebar';
@@ -25,12 +25,12 @@ const SchoolProfile = () => {
   const [provinces, setProvinces] = useState([]);
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
-  
+
   // Previews untuk menampilkan gambar sementara di UI
   const [previews, setPreviews] = useState({ sekolah: null, yayasan: null, background: null });
   // imageFiles untuk menampung File Object yang akan dikirim ke Backend
   const [imageFiles, setImageFiles] = useState({ sekolah: null, yayasan: null, background: null });
-  
+
   const [currentLink, setCurrentLink] = useState('');
 
   const listJenjang = {
@@ -58,7 +58,7 @@ const SchoolProfile = () => {
           axios.get('http://localhost:5000/api/school/profile'),
           axios.get('https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json')
         ]);
-        
+
         setProvinces(provRes.data);
         if (profileRes.data) {
           const db = profileRes.data;
@@ -91,8 +91,8 @@ const SchoolProfile = () => {
             background: db.buildingPhoto ? `http://localhost:5000/uploads/${db.buildingPhoto}` : null
           });
         }
-      } catch (err) { 
-        console.error("Fetch Error:", err); 
+      } catch (err) {
+        console.error("Fetch Error:", err);
       }
     };
     fetchData();
@@ -126,7 +126,7 @@ const SchoolProfile = () => {
     const token = localStorage.getItem('token');
 
     const dataToSend = new FormData();
-    
+
     // Append data text
     dataToSend.append('schoolName', formData.namaSekolah);
     dataToSend.append('npsn', formData.npsn);
@@ -174,11 +174,11 @@ const SchoolProfile = () => {
         // Refresh untuk sinkronisasi semua komponen
         setTimeout(() => window.location.reload(), 1500);
       }
-    } catch (err) { 
+    } catch (err) {
       const errorMsg = err.response?.data?.message || 'Gagal simpan ke server';
-      toast.error(errorMsg, { id: loadId }); 
-    } finally { 
-      setLoading(false); 
+      toast.error(errorMsg, { id: loadId });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -206,13 +206,13 @@ const SchoolProfile = () => {
     <div className="min-h-screen bg-[#F4F7FE] flex overflow-hidden font-['Poppins'] text-[13px] text-slate-700">
       <Toaster position="top-right" />
       <Sidebar isOpen={isSidebarOpen} setOpen={setSidebarOpen} />
-      
+
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         <Header setOpen={setSidebarOpen} user={user} />
-        
+
         <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 scroll-smooth">
           <div className="max-w-7xl mx-auto space-y-6 pb-10">
-            
+
             <div className="flex flex-col sm:flex-row items-center justify-between bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm gap-4">
               <div className="flex items-center gap-5 w-full sm:w-auto">
                 <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shrink-0">
@@ -229,7 +229,7 @@ const SchoolProfile = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              
+
               <div className="lg:col-span-8 order-1 lg:order-2">
                 <div className="bg-white p-8 md:p-12 rounded-[3rem] border border-slate-200 shadow-sm space-y-12">
                   <div className="space-y-8">
@@ -241,7 +241,7 @@ const SchoolProfile = () => {
                         <label htmlFor="namaSekolah" className="font-black text-slate-600 uppercase text-[10px] ml-1 tracking-wider">Nama Lengkap Satuan Pendidikan</label>
                         <input id="namaSekolah" name="namaSekolah" type="text" value={formData.namaSekolah} onChange={(e) => setFormData({...formData, namaSekolah: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4.5 font-bold text-slate-900 outline-none focus:ring-2 focus:ring-blue-600/10 focus:border-blue-600 text-sm shadow-sm" />
                       </div>
-                      
+
                       <div className="space-y-2.5">
                         <label htmlFor="kategori" className="font-black text-slate-600 uppercase text-[10px] ml-1 tracking-wider">Kategori</label>
                         <select id="kategori" name="kategori" value={formData.kategori} onChange={(e) => setFormData({...formData, kategori: e.target.value, jenjang: listJenjang[e.target.value][0]})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4.5 font-bold text-slate-900 outline-none appearance-none text-sm shadow-sm">
@@ -256,18 +256,18 @@ const SchoolProfile = () => {
                         <span className="block font-black text-slate-600 uppercase text-[10px] ml-1 tracking-wider">
                           Jenjang Pendidikan
                         </span>
-                        <div 
-                          role="group" 
+                        <div
+                          role="group"
                           className="flex bg-slate-100 p-1.5 rounded-2xl gap-1.5"
                         >
                           {listJenjang[formData.kategori].map(j => (
-                            <button 
-                              key={j} 
-                              type="button" 
-                              onClick={() => setFormData({...formData, jenjang: j})} 
+                            <button
+                              key={j}
+                              type="button"
+                              onClick={() => setFormData({...formData, jenjang: j})}
                               className={`flex-1 py-3 rounded-xl font-black text-[10px] transition-all ${
-                                formData.jenjang === j 
-                                ? 'bg-white text-blue-600 shadow-md' 
+                                formData.jenjang === j
+                                ? 'bg-white text-blue-600 shadow-md'
                                 : 'text-slate-500 hover:text-slate-700'
                               }`}
                             >
@@ -287,18 +287,18 @@ const SchoolProfile = () => {
                         <span className="block font-black text-slate-600 uppercase text-[10px] ml-1 tracking-wider">
                           Status
                         </span>
-                        <div 
-                          role="group" 
+                        <div
+                          role="group"
                           className="flex bg-slate-100 p-1.5 rounded-2xl gap-1.5"
                         >
                           {['Negeri', 'Swasta'].map(s => (
-                            <button 
-                              key={s} 
-                              type="button" 
-                              onClick={() => setFormData({...formData, statusSekolah: s})} 
+                            <button
+                              key={s}
+                              type="button"
+                              onClick={() => setFormData({...formData, statusSekolah: s})}
                               className={`flex-1 py-3 rounded-xl font-black text-[10px] transition-all ${
-                                formData.statusSekolah === s 
-                                ? 'bg-white text-blue-600 shadow-md' 
+                                formData.statusSekolah === s
+                                ? 'bg-white text-blue-600 shadow-md'
                                 : 'text-slate-500 hover:text-slate-700'
                               }`}
                             >
@@ -399,7 +399,7 @@ const SchoolProfile = () => {
                   <h3 className="font-black text-slate-800 uppercase tracking-widest text-[11px] mb-8 flex items-center gap-3 italic">
                     <ImageIcon size={18} className="text-blue-600" /> Branding & Media
                   </h3>
-                  
+
                   <div className="space-y-8">
                     <div className="grid grid-cols-2 gap-6">
                       {/* LOGO INSTANSI */}
@@ -408,7 +408,7 @@ const SchoolProfile = () => {
                           {previews.sekolah ? (
                             <>
                               <img src={previews.sekolah} className="w-full h-full object-contain p-4" alt="Logo Sekolah" />
-                              <button 
+                              <button
                                 type="button"
                                 onClick={() => removeImage('sekolah')}
                                 className="absolute top-4 right-4 p-2 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-lg z-20"
@@ -421,12 +421,12 @@ const SchoolProfile = () => {
                           )}
                           <label htmlFor="input-logo-sekolah" className="absolute inset-0 bg-blue-600/20 opacity-0 group-hover:opacity-100 cursor-pointer flex items-center justify-center transition-all z-10">
                             <Upload className="text-blue-700" size={24} />
-                            <input 
-                              id="input-logo-sekolah" 
+                            <input
+                              id="input-logo-sekolah"
                               name="schoolLogo"
-                              type="file" 
-                              className="hidden" 
-                              onChange={(e) => handleImage(e, 'sekolah')} 
+                              type="file"
+                              className="hidden"
+                              onChange={(e) => handleImage(e, 'sekolah')}
                             />
                           </label>
                         </div>
@@ -439,7 +439,7 @@ const SchoolProfile = () => {
                           {previews.yayasan ? (
                             <>
                               <img src={previews.yayasan} className="w-full h-full object-contain p-4" alt="Logo Yayasan" />
-                              <button 
+                              <button
                                 type="button"
                                 onClick={() => removeImage('yayasan')}
                                 className="absolute top-4 right-4 p-2 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-lg z-20"
@@ -452,12 +452,12 @@ const SchoolProfile = () => {
                           )}
                           <label htmlFor="input-logo-yayasan" className="absolute inset-0 bg-slate-800/20 opacity-0 group-hover:opacity-100 cursor-pointer flex items-center justify-center transition-all z-10">
                             <Upload className="text-slate-800" size={24} />
-                            <input 
-                              id="input-logo-yayasan" 
+                            <input
+                              id="input-logo-yayasan"
                               name="foundationLogo"
-                              type="file" 
-                              className="hidden" 
-                              onChange={(e) => handleImage(e, 'yayasan')} 
+                              type="file"
+                              className="hidden"
+                              onChange={(e) => handleImage(e, 'yayasan')}
                             />
                           </label>
                         </div>
@@ -471,7 +471,7 @@ const SchoolProfile = () => {
                         {previews.background ? (
                           <>
                             <img src={previews.background} className="w-full h-full object-contain p-4" alt="Logo background" />
-                            <button 
+                            <button
                               type="button"
                               onClick={() => removeImage('background')} // FUNGSI DIGUNAKAN DISINI
                               className="absolute top-4 right-4 p-2 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-lg z-20"
@@ -487,12 +487,12 @@ const SchoolProfile = () => {
                         )}
                         <label htmlFor="input-foto-gedung" className="absolute inset-0 bg-emerald-600/20 opacity-0 group-hover:opacity-100 cursor-pointer flex items-center justify-center transition-all z-10">
                           <Upload className="text-emerald-700" size={24} />
-                          <input 
-                            id="input-foto-gedung" 
+                          <input
+                            id="input-foto-gedung"
                             name="buildingPhoto"
-                            type="file" 
-                            className="hidden" 
-                            onChange={(e) => handleImage(e, 'background')} 
+                            type="file"
+                            className="hidden"
+                            onChange={(e) => handleImage(e, 'background')}
                           />
                         </label>
                       </div>
@@ -500,7 +500,7 @@ const SchoolProfile = () => {
                     </div>
                   </div>
                 </section>
-                
+
                 <section className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm flex flex-col">
                   <h3 className="font-black text-slate-800 uppercase tracking-widest text-[11px] mb-6 flex items-center gap-3 italic">
                     <Globe size={18} className="text-blue-600" /> Sosial Media

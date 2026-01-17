@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { 
-  Users, BookOpen, TrendingUp, UserCheck, 
-  Calendar, Bell, ShieldCheck, Zap, History, 
+import {
+  Users, BookOpen, TrendingUp, UserCheck,
+  Calendar, Bell, ShieldCheck, Zap, History,
   ArrowUpRight, Info, MessageCircle
 } from 'lucide-react';
 
@@ -37,16 +37,16 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const token = localStorage.getItem('token'); 
-        
+        const token = localStorage.getItem('token');
+
         if (!token) {
           console.warn("Token tidak ditemukan, mengalihkan ke login...");
           return;
         }
 
         const res = await axios.get('http://localhost:5000/api/school/logs', {
-          headers: { 
-            Authorization: `Bearer ${token}` 
+          headers: {
+            Authorization: `Bearer ${token}`
           }
         });
         setLogs(res.data);
@@ -77,10 +77,10 @@ const Dashboard = () => {
       )}
 
       <Sidebar isOpen={isSidebarOpen} setOpen={setSidebarOpen} />
-      
+
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         <Header setOpen={setSidebarOpen} user={user} handleLogout={handleLogout} />
-        
+
         <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-10">
           {/* MENGGUNAKAN isLoading: Menampilkan bar progress kecil di atas saat loading */}
           {isLoading && (
@@ -90,7 +90,7 @@ const Dashboard = () => {
           )}
 
           <div className="max-w-7xl mx-auto space-y-8">
-            
+
             {/* WELCOME SECTION */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
@@ -120,7 +120,7 @@ const Dashboard = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              
+
               {/* AREA KIRI: GRAFIK */}
               <div className="lg:col-span-2 bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-sm relative overflow-hidden flex flex-col items-center justify-center min-h-[400px]">
                 <div className="absolute top-8 left-8 flex items-center gap-3">
@@ -132,19 +132,19 @@ const Dashboard = () => {
                    <p className="font-bold italic">Area Visualisasi Data Keberangkatan</p>
                 </div>
               </div>
-              
+
               {/* AREA KANAN: INFORMASI & INTERAKSI */}
               <div className="space-y-6">
-                
+
                 <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl">
                   <div className="relative z-10">
                     <h3 className="font-black text-[12px] uppercase tracking-widest mb-6 flex items-center gap-2">
                       <Bell size={16} className="text-blue-400" /> Informasi Sistem
                     </h3>
-                    
+
                     <div className="space-y-4">
                       {/* Trigger AuditModal */}
-                      <button 
+                      <button
                         onClick={() => setShowAuditModal(true)}
                         className="w-full text-left p-4 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all group"
                       >
@@ -163,7 +163,7 @@ const Dashboard = () => {
                       </button>
 
                       {/* Trigger VersionModal */}
-                      <button 
+                      <button
                         onClick={() => setShowVersionModal(true)}
                         className="w-full text-left p-4 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all flex items-center justify-between"
                       >
@@ -184,7 +184,7 @@ const Dashboard = () => {
                 </div>
 
                 {/* Trigger SupportModal */}
-                <div 
+                <div
                   onClick={() => setShowSupportModal(true)}
                   className="bg-blue-600 rounded-[2.5rem] p-6 text-white flex items-center justify-between shadow-xl shadow-blue-100 group cursor-pointer overflow-hidden relative active:scale-95 transition-all"
                 >
@@ -206,10 +206,10 @@ const Dashboard = () => {
       </div>
 
       {/* RENDER MODAL: Memperbaiki error ESLint unused variables */}
-      {showAuditModal && <AuditModal data={logs} onClose={() => setShowAuditModal(false)} />} 
+      {showAuditModal && <AuditModal data={logs} onClose={() => setShowAuditModal(false)} />}
       {showSupportModal && <SupportModal onClose={() => setShowSupportModal(false)} />}
       {showVersionModal && <VersionModal onClose={() => setShowVersionModal(false)} />}
-     
+
     </div>
   );
 };

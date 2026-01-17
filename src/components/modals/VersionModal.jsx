@@ -12,7 +12,7 @@ const VersionModal = ({ onClose }) => {
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-md" onClick={onClose} />
-      
+
       {/* Modal Card */}
       <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative overflow-hidden flex flex-col transition-all">
         {/* Header - Dark Style */}
@@ -61,7 +61,7 @@ const VersionModal = ({ onClose }) => {
               <span className="text-[8px] font-black text-slate-400 uppercase leading-none">Status Lisensi</span>
               <span className="text-[10px] font-bold text-emerald-600">Enterprise Verified</span>
             </div>
-            <button 
+            <button
               onClick={onClose}
               className="px-6 py-3 bg-slate-900 text-white rounded-xl font-black uppercase text-[9px] tracking-widest hover:bg-blue-600 transition-all shadow-lg"
             >

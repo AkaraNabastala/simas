@@ -51,22 +51,22 @@ const [school, setSchool] = useState(() => {
   return (
     <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 transition-all duration-300 transform font-['Poppins']
       ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:relative lg:translate-x-0`}>
-      
+
       <div className="h-full flex flex-col">
         <div className="p-6 flex items-center justify-between border-b border-slate-50">
           {/* SINKRONISASI LOGO DENGAN BACKEND */}
           <div className="flex items-center gap-3">
             {/* Container Logo dengan ukuran terkontrol */}
             <div className="w-14 h-14 flex items-center justify-center overflow-hidden rounded-lg bg-slate-50">
-              <img 
-                src={school?.schoolLogo ? `http://localhost:5000/uploads/${school.schoolLogo}` : logoDefault} 
-                alt="Logo Sekolah" 
+              <img
+                src={school?.schoolLogo ? `http://localhost:5000/uploads/${school.schoolLogo}` : logoDefault}
+                alt="Logo Sekolah"
                 className="w-full h-full object-contain transition-opacity duration-300"
-                key={school?.schoolLogo || 'default'} 
+                key={school?.schoolLogo || 'default'}
                 onLoad={(e) => e.target.style.opacity = 1}
               />
             </div>
-            
+
             <div className="flex flex-col">
               <span className="font-black text-lg text-blue-700 tracking-tighter leading-none uppercase">
                 SI-MAS
@@ -76,8 +76,8 @@ const [school, setSchool] = useState(() => {
               </span>
             </div>
           </div>
-          <button 
-            onClick={() => setOpen(false)} 
+          <button
+            onClick={() => setOpen(false)}
             className="lg:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-xl"
             aria-label="Tutup Menu"
           >
@@ -98,8 +98,8 @@ const [school, setSchool] = useState(() => {
                   if (setOpen) setOpen(false);
                 }}
                 className={`w-full flex items-center justify-between px-4 py-3.5 rounded-2xl text-[12px] font-bold transition-all ${
-                  isActive 
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' 
+                  isActive
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-100'
                   : 'text-slate-700 hover:bg-blue-50 hover:text-blue-700'
                 }`}
               >
@@ -114,7 +114,7 @@ const [school, setSchool] = useState(() => {
         </nav>
 
         <div className="p-4 border-t border-slate-100">
-          <button 
+          <button
             type="button"
             onClick={() => { localStorage.clear(); navigate('/'); }}
             className="w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-[12px] font-black text-red-600 hover:bg-red-50 transition-colors"
