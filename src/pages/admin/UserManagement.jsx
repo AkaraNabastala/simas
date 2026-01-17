@@ -2,13 +2,14 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { 
   UserPlus, Users, Key, Trash2, 
   Edit3, Search, Save, FileUp,
-  ShieldCheck, GraduationCap, UserRound, LayoutGrid
+  ShieldCheck, GraduationCap, UserRound, LayoutGrid, Eye
 } from 'lucide-react';
 import Sidebar from '../../components/Sidebar';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import ImportModal from '../../components/modals/ImportModal';
 import EditUserModal from '../../components/modals/EditUserModal';
+import DetailUserModal from '../../components/modals/DetailUserModal';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
 
@@ -21,6 +22,7 @@ const UserManagement = () => {
   
   const [showImportModal, setShowImportModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [tempParsedData, setTempParsedData] = useState([]);
   const [currentFileName, setCurrentFileName] = useState("");
@@ -72,6 +74,7 @@ const UserManagement = () => {
   const handleEditClick = (user) => {
     setSelectedUser(user);
     setShowEditModal(true);
+    // setShowDetailModal(true);
   };
 
   const handleUpdateUser = async (updatedData) => {
@@ -167,6 +170,12 @@ const UserManagement = () => {
         onSave={handleUpdateUser}
       />
 
+      <DetailUserModal 
+        isOpen={showDetailModal}
+        onClose={() => setShowDetailModal(false)}
+        userData={selectedUser}
+      />
+
       <Sidebar isOpen={isSidebarOpen} setOpen={setSidebarOpen} />
       
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
@@ -204,17 +213,43 @@ const UserManagement = () => {
 
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-1.5">
-                      <label className="font-black text-slate-800 uppercase text-[10px] ml-1">Nama Lengkap</label>
-                      <input required name="full_name" value={formData.full_name} onChange={handleInputChange} type="text" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 font-bold text-slate-900 outline-none focus:border-blue-600 transition-all text-[13px] placeholder:text-[11px]" placeholder="Nama lengkap..." />
+                      <label htmlFor="full_name" className="font-black text-slate-800 uppercase text-[10px] ml-1">Nama Lengkap</label>
+                      <input 
+                        required 
+                        id="full_name"
+                        name="full_name"
+                        autoComplete="name"
+                        value={formData.full_name} 
+                        onChange={handleInputChange} 
+                        type="text" 
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 font-bold text-slate-900 outline-none focus:border-blue-600 transition-all text-[13px] placeholder:text-[11px]" 
+                        placeholder="Nama lengkap..." 
+                      />
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1.5">
-                        <label className="font-black text-slate-800 uppercase text-[10px] ml-1">Username</label>
-                        <input required name="username" value={formData.username} onChange={handleInputChange} type="text" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 font-bold text-slate-900 outline-none focus:border-blue-600 transition-all text-[13px]" placeholder="ID Unik" />
+                        <label htmlFor="username" className="font-black text-slate-800 uppercase text-[10px] ml-1">Username</label>
+                        <input 
+                          required 
+                          id="username"
+                          name="username" 
+                          autoComplete="username"
+                          value={formData.username} 
+                          onChange={handleInputChange} 
+                          type="text" 
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 font-bold text-slate-900 outline-none focus:border-blue-600 transition-all text-[13px]" 
+                          placeholder="ID Unik" 
+                        />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="font-black text-slate-800 uppercase text-[10px] ml-1">Role</label>
-                        <select name="role" value={formData.role} onChange={handleInputChange} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 font-bold text-slate-900 outline-none focus:border-blue-600 appearance-none text-[13px]">
+                        <label htmlFor="role" className="font-black text-slate-800 uppercase text-[10px] ml-1">Role</label>
+                        <select 
+                          id="role"
+                          name="role" 
+                          value={formData.role} 
+                          onChange={handleInputChange} 
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 font-bold text-slate-900 outline-none focus:border-blue-600 appearance-none text-[13px]"
+                        >
                           <option value="Admin">Admin</option>
                           <option value="Guru">Guru</option>
                           <option value="Siswa">Siswa</option>
@@ -222,12 +257,31 @@ const UserManagement = () => {
                       </div>
                     </div>
                     <div className="space-y-1.5">
-                      <label className="font-black text-slate-800 uppercase text-[10px] ml-1">Nomor Identitas</label>
-                      <input name="identity_number" value={formData.identity_number} onChange={handleInputChange} type="text" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 font-bold text-slate-900 outline-none focus:border-blue-600 transition-all text-[13px]" placeholder="NIP/NISN" />
+                      <label htmlFor="identity_number" className="font-black text-slate-800 uppercase text-[10px] ml-1">Nomor Identitas</label>
+                      <input 
+                        id="identity_number"
+                        name="identity_number" 
+                        autoComplete="off" // Karena ini nomor unik sekolah, kita matikan autocomplete-nya
+                        value={formData.identity_number} 
+                        onChange={handleInputChange} 
+                        type="text" 
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 font-bold text-slate-900 outline-none focus:border-blue-600 transition-all text-[13px]" 
+                        placeholder="NIP/NISN" 
+                      />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="font-black text-slate-800 uppercase text-[10px] ml-1">Password</label>
-                      <input required name="password" value={formData.password} onChange={handleInputChange} type="password" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 font-bold text-slate-900 outline-none focus:border-blue-600 transition-all text-[13px]" placeholder="••••••••" />
+                      <label htmlFor="password" className="font-black text-slate-800 uppercase text-[10px] ml-1">Password</label>
+                      <input 
+                        required 
+                        id="password"
+                        name="password" 
+                        autoComplete="new-password" // Beritahu browser ini adalah pembuatan password baru
+                        value={formData.password} 
+                        onChange={handleInputChange} 
+                        type="password" 
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 font-bold text-slate-900 outline-none focus:border-blue-600 transition-all text-[13px]" 
+                        placeholder="••••••••" 
+                      />
                     </div>
                     <button type="submit" disabled={loading} className="w-full flex items-center justify-center gap-2 bg-slate-900 hover:bg-blue-600 text-white py-4 rounded-xl font-black uppercase text-[11px] transition-all shadow-lg mt-2">
                       <Save size={18} /> {loading ? 'Memproses...' : 'Simpan User'}
@@ -264,9 +318,13 @@ const UserManagement = () => {
                       <h3 className="font-black text-slate-900 uppercase text-[13px]">Daftar {activeTab}</h3>
                     </div>
                     <div className="relative w-full md:w-72">
+                      {/* Label SR-Only agar terbaca browser tapi tidak merusak UI */}
+                      <label htmlFor="search-user" className="sr-only">Cari Pengguna</label>
                       <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
                       <input 
-                        type="text" placeholder="Cari..." 
+                        id="search-user"
+                        type="text" 
+                        placeholder="Cari..." 
                         className="bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3 font-bold text-slate-900 outline-none focus:border-blue-600 w-full transition-all text-[13px]"
                         onChange={(e) => setSearchQuery(e.target.value)}
                       />
@@ -309,6 +367,14 @@ const UserManagement = () => {
                             </td>
                             <td className="px-6 py-4 text-center">
                               <div className="flex items-center justify-center gap-2">
+                                <button 
+                                  onClick={() => { setSelectedUser(user); setShowDetailModal(true); }} 
+                                  className="p-2.5 hover:bg-emerald-50 hover:text-emerald-600 text-slate-400 rounded-lg transition-all"
+                                  title="Lihat Biodata"
+                                >
+                                  <Eye size={16} />
+                                </button>
+                                
                                 <button onClick={() => handleEditClick(user)} className="p-2.5 hover:bg-blue-600 hover:text-white text-slate-400 rounded-lg transition-all"><Edit3 size={16} /></button>
                                 <button onClick={() => handleDelete(user.id)} className="p-2.5 hover:bg-red-600 hover:text-white text-slate-400 rounded-lg transition-all"><Trash2 size={16} /></button>
                               </div>

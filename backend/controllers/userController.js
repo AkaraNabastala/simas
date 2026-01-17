@@ -92,9 +92,9 @@ export const updateAccount = async (req, res) => {
             // B. VALIDASI BARU: Cek apakah sandi baru sama dengan sandi lama
             const isSameAsOld = await bcrypt.compare(newPassword, user.password);
             if (isSameAsOld) {
-                return res.status(400).json({ 
-                    success: false, 
-                    message: "Sandi baru tidak boleh sama dengan sandi saat ini!" 
+                return res.status(400).json({
+                    success: false,
+                    message: "Sandi baru tidak boleh sama dengan sandi saat ini!"
                 });
             }
 
@@ -143,7 +143,7 @@ export const importUsers = async (req, res) => {
         const preparedData = await Promise.all(users.map(async (user) => {
             // Default password jika tidak ada di CSV adalah '123456'
             const defaultPassword = await bcrypt.hash('123456', 10);
-            
+
             return {
                 full_name: user.full_name,
                 username: user.username.toLowerCase().trim(),
@@ -160,9 +160,9 @@ export const importUsers = async (req, res) => {
             skipDuplicates: true, // Cyber Security: Mencegah error jika ada username ganda
         });
 
-        res.status(201).json({ 
-            success: true, 
-            message: `${createdUsers.count} user berhasil diimpor ke sistem.` 
+        res.status(201).json({
+            success: true,
+            message: `${createdUsers.count} user berhasil diimpor ke sistem.`
         });
     } catch (error) {
         console.error("Import Database Error:", error);

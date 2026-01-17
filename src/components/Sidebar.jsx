@@ -7,18 +7,38 @@ import logoDefault from '../assets/logo_smk.png';
 const Sidebar = ({ isOpen, setOpen }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [school, setSchool] = useState(null);
+  // 1. Inisialisasi State (Langsung ambil dari localStorage saat pertama kali load)
+const [school, setSchool] = useState(() => {
+  const cached = localStorage.getItem('school_profile');
+  return cached ? JSON.parse(cached) : null;
+});
 
   useEffect(() => {
+    // BAGIAN INI DIHAPUS (if cachedProfile { ... }) karena sudah ditangani oleh useState di atas
+
     const fetchProfile = async () => {
       try {
         const res = await axios.get('http://localhost:5000/api/school/profile');
         setSchool(res.data);
+        // Update cache agar navigasi berikutnya selalu mendapatkan data terbaru
+        localStorage.setItem('school_profile', JSON.stringify(res.data));
       } catch (err) {
         console.error("Gagal memuat logo", err);
       }
     };
+
     fetchProfile();
+
+    // Listener untuk menangkap perubahan data jika user update profil di halaman lain
+    const handleStorageChange = () => {
+      const updated = localStorage.getItem('school_profile');
+      if (updated) {
+        setSchool(JSON.parse(updated));
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   const menuItems = [
@@ -34,14 +54,33 @@ const Sidebar = ({ isOpen, setOpen }) => {
       
       <div className="h-full flex flex-col">
         <div className="p-6 flex items-center justify-between border-b border-slate-50">
+          {/* SINKRONISASI LOGO DENGAN BACKEND */}
           <div className="flex items-center gap-3">
-            <img src={school?.schoolLogo || logoDefault} alt="Logo" className="h-9 w-auto object-contain" />
+            {/* Container Logo dengan ukuran terkontrol */}
+            <div className="w-14 h-14 flex items-center justify-center overflow-hidden rounded-lg bg-slate-50">
+              <img 
+                src={school?.schoolLogo ? `http://localhost:5000/uploads/${school.schoolLogo}` : logoDefault} 
+                alt="Logo Sekolah" 
+                className="w-full h-full object-contain transition-opacity duration-300"
+                key={school?.schoolLogo || 'default'} 
+                onLoad={(e) => e.target.style.opacity = 1}
+              />
+            </div>
+            
             <div className="flex flex-col">
-              <span className="font-black text-lg text-blue-700 tracking-tighter leading-none uppercase">SI-MAS</span>
-              <span className="text-[8px] font-bold text-slate-600 uppercase tracking-widest mt-1">Akademik Sistem</span>
+              <span className="font-black text-lg text-blue-700 tracking-tighter leading-none uppercase">
+                SI-MAS
+              </span>
+              <span className="text-[12px] font-bold text-slate-600 uppercase tracking-widest mt-1">
+                Akademik Sistem
+              </span>
             </div>
           </div>
-          <button onClick={() => setOpen(false)} className="lg:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-xl">
+          <button 
+            onClick={() => setOpen(false)} 
+            className="lg:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-xl"
+            aria-label="Tutup Menu"
+          >
             <X size={20} />
           </button>
         </div>
@@ -53,6 +92,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
             return (
               <button
                 key={item.name}
+                type="button"
                 onClick={() => {
                   navigate(item.path);
                   if (setOpen) setOpen(false);
@@ -75,6 +115,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
 
         <div className="p-4 border-t border-slate-100">
           <button 
+            type="button"
             onClick={() => { localStorage.clear(); navigate('/'); }}
             className="w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-[12px] font-black text-red-600 hover:bg-red-50 transition-colors"
           >

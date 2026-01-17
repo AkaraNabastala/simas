@@ -5,10 +5,10 @@ import bcrypt from 'bcrypt';
 
 async function main() {
   console.log('--- 🛡️ Memulai Reset & Seeding Database ---');
-  
+
   try {
     // 1. Bersihkan data lama
-    await prisma.schoolProfile.deleteMany(); 
+    await prisma.schoolProfile.deleteMany();
     await prisma.users.deleteMany();
     console.log('✓ Database berhasil dikosongkan.');
 

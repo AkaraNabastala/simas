@@ -69,16 +69,18 @@ const Login = () => {
         {/* SISI KIRI: Form Login */}
         <div className="w-full lg:w-[38%] flex flex-col justify-between px-10 md:px-16 lg:px-12 xl:px-20 py-10 bg-white z-10 border-r border-slate-100">
           
-          {/* Header Mobile: SI-MAS di pojok kiri atas */}
           <div className="lg:hidden absolute top-8 left-10">
             <div className="flex flex-col">
               <span className="font-black text-lg tracking-tighter text-blue-600 leading-none uppercase">SI-MAS</span>
             </div>
           </div>
 
-          {/* Logo Section Desktop (Tetap seperti sebelumnya) */}
           <div className="hidden lg:flex items-center justify-start gap-2">
-            <img src={school?.schoolLogo || logoDefault} alt="Logo" className="h-14 w-auto object-contain" />
+            <img 
+              src={school?.schoolLogo ? `http://localhost:5000/uploads/${school.schoolLogo}` : logoDefault} 
+              alt="Logo" 
+              className="h-14 w-auto object-contain" 
+            />
             <div className="h-10 w-[1px] bg-slate-200 mx-1" />
             <div className="flex flex-col">
               <span className="font-black text-lg tracking-tighter text-blue-600 leading-none uppercase">SI-MAS</span>
@@ -86,21 +88,19 @@ const Login = () => {
             </div>
           </div>
 
-          {/* Form Section */}
           <div className="max-w-sm w-full mx-auto lg:mx-0 py-8 lg:py-0">
             <div className="mb-10 text-center lg:text-left flex flex-col items-center lg:items-start">
               
-              {/* Logo & Nama Sekolah - Khusus Mobile (Center Stacked) */}
               <div className="lg:hidden mb-8 flex flex-col items-center">
                 <img 
-                  src={school?.schoolLogo || logoDefault} 
+                  src={school?.schoolLogo ? `http://localhost:5000/uploads/${school.schoolLogo}` : logoDefault} 
                   alt="Logo Sekolah" 
                   className="h-20 w-auto object-contain mb-4" 
                 />
                 <h2 className="text-2xl font-black text-slate-900 mb-2 tracking-tighter uppercase leading-none">
                   {school?.schoolName || 'NAMA SEKOLAH'}
                 </h2>
-                <p className="text-[10px] text-slate-500 font-medium italic uppercase tracking-tight">
+                <p className="text-[10px] text-slate-500 font-medium italic uppercase tracking-tight text-center">
                   {school?.address}
                 </p>
               </div>
@@ -111,18 +111,36 @@ const Login = () => {
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
-                <label className="font-black text-slate-700 uppercase tracking-[0.15em] text-[9px] ml-1">Username / NISN</label>
+                <label htmlFor="username" className="font-black text-slate-700 uppercase tracking-[0.15em] text-[9px] ml-1">Username / NISN</label>
                 <div className="relative group">
                   <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 group-focus-within:text-blue-600 transition-colors"><User size={20}/></span>
-                  <input required type="text" className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-slate-800 text-[11px]" placeholder="Masukkan ID" onChange={(e) => setForm({...form, username: e.target.value})} />
+                  <input 
+                    required 
+                    id="username"
+                    name="username"
+                    autoComplete="username"
+                    type="text" 
+                    className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-slate-800 text-[11px]" 
+                    placeholder="Masukkan ID" 
+                    onChange={(e) => setForm({...form, username: e.target.value})} 
+                  />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="font-black text-slate-700 uppercase tracking-[0.15em] text-[9px] ml-1">Kata Sandi</label>
+                <label htmlFor="password" className="font-black text-slate-700 uppercase tracking-[0.15em] text-[9px] ml-1">Kata Sandi</label>
                 <div className="relative group">
                   <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 group-focus-within:text-blue-600 transition-colors"><Lock size={20}/></span>
-                  <input required type={showPassword ? "text" : "password"} className="w-full pl-12 pr-12 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-slate-800 text-[11px]" placeholder="••••••••" onChange={(e) => setForm({...form, password: e.target.value})} />
+                  <input 
+                    required 
+                    id="password"
+                    name="password"
+                    autoComplete="current-password"
+                    type={showPassword ? "text" : "password"} 
+                    className="w-full pl-12 pr-12 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-slate-800 text-[11px]" 
+                    placeholder="••••••••" 
+                    onChange={(e) => setForm({...form, password: e.target.value})} 
+                  />
                   <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600">{showPassword ? <EyeOff size={20}/> : <Eye size={20}/>}</button>
                 </div>
               </div>
@@ -146,7 +164,6 @@ const Login = () => {
             )}
           </div>
 
-          {/* FOOTER: Alamat (Hanya Desktop) */}
           <div className="hidden lg:block pt-8 border-t border-slate-100">
             <div className="flex flex-col">
               <p className="font-black text-slate-900 uppercase tracking-tight text-[12px] leading-tight">
@@ -159,10 +176,14 @@ const Login = () => {
           </div>
         </div>
 
-        {/* SISI KANAN: Visual Experience (Hidden on Mobile) */}
+        {/* SISI KANAN: Visual Experience */}
         <div className="hidden lg:flex w-[62%] relative items-end justify-start bg-slate-900 p-20 overflow-hidden">
           <div className="absolute inset-0">
-            <img src={school?.buildingPhoto || gedungDefault} alt="Gedung" className="w-full h-full object-cover opacity-60" />
+            <img 
+              src={school?.buildingPhoto ? `http://localhost:5000/uploads/${school.buildingPhoto}` : gedungDefault} 
+              alt="Gedung Sekolah" 
+              className="w-full h-full object-cover opacity-60" 
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/20 to-transparent" />
           </div>
 

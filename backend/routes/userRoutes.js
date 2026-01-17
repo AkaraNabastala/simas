@@ -1,9 +1,9 @@
 import express from 'express';
-import { 
-    getUsers, 
-    createUser, 
-    updateProfile, 
-    updateAccount, 
+import {
+    getUsers,
+    createUser,
+    updateProfile,
+    updateAccount,
     deleteUser,
     importUsers // Tambahkan ini
 } from '../controllers/userController.js';

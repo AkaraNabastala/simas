@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { X, Save, User, Key } from 'lucide-react';
 
 const EditUserModal = ({ isOpen, onClose, onSave, userData }) => {
-  // Inisialisasi state langsung dari props (hanya berjalan saat modal pertama kali muncul/remount)
   const [editData, setEditData] = useState({
     id: userData?.id || '',
     full_name: userData?.full_name || '',
@@ -22,15 +21,18 @@ const EditUserModal = ({ isOpen, onClose, onSave, userData }) => {
             <User size={16} className="text-blue-400" />
             <h3 className="text-[11px] font-black tracking-widest uppercase italic text-white">Edit Pengguna</h3>
           </div>
-          <button onClick={onClose} className="p-1.5 hover:bg-white/10 rounded-lg transition-colors text-white">
+          <button type="button" onClick={onClose} className="p-1.5 hover:bg-white/10 rounded-lg transition-colors text-white">
             <X size={16} />
           </button>
         </div>
 
         <form className="p-5 space-y-4" onSubmit={(e) => { e.preventDefault(); onSave(editData); }}>
           <div className="space-y-1.5">
-            <label className="text-[9px] font-black text-slate-400 uppercase ml-1">Nama Lengkap</label>
+            <label htmlFor="edit-full-name" className="text-[9px] font-black text-slate-400 uppercase ml-1">Nama Lengkap</label>
             <input 
+              id="edit-full-name"
+              name="full_name"
+              autoComplete="name"
               className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-[11px] font-bold text-slate-900 outline-none focus:border-blue-600 transition-all"
               value={editData.full_name}
               onChange={(e) => setEditData({...editData, full_name: e.target.value})}
@@ -39,16 +41,21 @@ const EditUserModal = ({ isOpen, onClose, onSave, userData }) => {
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label className="text-[9px] font-black text-slate-400 uppercase ml-1">Username</label>
+              <label htmlFor="edit-username" className="text-[9px] font-black text-slate-400 uppercase ml-1">Username</label>
               <input 
+                id="edit-username"
+                name="username"
+                autoComplete="username"
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-[11px] font-bold text-slate-900 outline-none focus:border-blue-600 transition-all"
                 value={editData.username}
                 onChange={(e) => setEditData({...editData, username: e.target.value})}
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-[9px] font-black text-slate-400 uppercase ml-1">Role</label>
+              <label htmlFor="edit-role" className="text-[9px] font-black text-slate-400 uppercase ml-1">Role</label>
               <select 
+                id="edit-role"
+                name="role"
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-[11px] font-bold text-slate-900 outline-none focus:border-blue-600 appearance-none transition-all"
                 value={editData.role}
                 onChange={(e) => setEditData({...editData, role: e.target.value})}
@@ -61,8 +68,11 @@ const EditUserModal = ({ isOpen, onClose, onSave, userData }) => {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[9px] font-black text-slate-400 uppercase ml-1">NIP / NISN</label>
+            <label htmlFor="edit-identity" className="text-[9px] font-black text-slate-400 uppercase ml-1">NIP / NISN</label>
             <input 
+              id="edit-identity"
+              name="identity_number"
+              autoComplete="off"
               className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-[11px] font-bold text-slate-900 outline-none focus:border-blue-600 transition-all"
               value={editData.identity_number || ''}
               onChange={(e) => setEditData({...editData, identity_number: e.target.value})}
@@ -70,11 +80,14 @@ const EditUserModal = ({ isOpen, onClose, onSave, userData }) => {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[9px] font-black text-slate-400 uppercase ml-1">Password Baru (Opsional)</label>
+            <label htmlFor="edit-password" className="text-[9px] font-black text-slate-400 uppercase ml-1">Password Baru (Opsional)</label>
             <div className="relative">
               <Key size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <input 
+                id="edit-password"
+                name="password"
                 type="password"
+                autoComplete="new-password"
                 placeholder="Kosongkan jika tidak diganti"
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-2.5 text-[11px] font-bold text-slate-900 outline-none focus:border-blue-600 transition-all placeholder:text-[9px] placeholder:font-normal"
                 value={editData.password}
